@@ -1,5 +1,6 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
+/*
 const foodILike = [
   {
     id : 1,
@@ -21,28 +22,127 @@ const foodILike = [
   },
 ];
 
-const Food = ({name, picture}) => {
+function Food({name, picture, rating}) {
   return (
     <div>
       <h2>I like {name}</h2>
+      <h4>{rating}/5.0</h4>
       <img src={picture} alt={name}/>
     </div>
   );
 }
 
-const renderFood = (dish) =>  {
+// 이름은 필수로 propTypes로 정해야 함
+Food.propTypes = {
+  name: PropTypes.string,
+  picture: PropTypes.string,
+  rating: PropTypes.number,  // isRequired가 없으면 undefined일 경우 에러가 나지 않음(있어도 되고 없어도)
+}
+
+// 함수로 넣고 싶을 때
+function renderFood(dish) {
   return (
-    <Food key={dish.id} name={dish.name} picture={dish.image}/>
+    <Food 
+      key={dish.id} 
+      name={dish.name} 
+      picture={dish.image} 
+      rating={dish.rating}
+    />
   );
 }
 
-const App = () => {
+function App() {
   return (
     <div>
-      {foodILike.map(renderFood)}
+      {foodILike.map(dish => 
+        <Food 
+          key={dish.id}
+          name={dish.name}
+          picture={dish.image}
+          rating={dish.rating}
+        />
+        )}
     </div>
   );
 }
+*/
+
+// life cycle method : react가 component를 생성하고 없애는 방법
+// Mounting, Updating, Unmounting(Component가 죽음)
+// Mounting
+//  1. constructor()
+//  2. render()
+
+/*
+class App extends React.Component {
+  // Component의 데이터를 넣음
+  // state는 object
+  // 변수를 state 안에 작성
+  
+  constructor(props) {
+    super(props);
+    console.log("Constructor Hello");
+  }
+
+  state = {
+    count: 0
+  };
+
+  add = () => {
+    this.setState(current => ({count : current.count + 1}));
+  }
+
+  minus = () => {
+    this.setState(current => ({count : current.count - 1}));
+  }
+
+  componentDidMount() {
+    console.log("Component rendered");
+  }
+
+  // Component Update --> render --> componentDidUpdate
+  componentDidUpdate() {
+    console.log("I just updated");
+  }
+
+  // Component가 떠날 때 호출
+  componentWillUnmount() {
+    console.log("Goodbye, cruel world");
+  }
+
+  // 자동 실행
+  render() {
+    console.log("I'm a rendering");
+    return (
+      <div>
+        <h1>The number is: {this.state.count}</h1>
+        <button onClick={this.add}>ADD</button>
+        <button onClick={this.minus}>MINUS</button>
+      </div>
+    );
+  }
+}
+*/
+
+class App extends React.Component {
+  
+  state = {
+    isLoading: true
+  }
+
+  componentDidMount() {
+
+  }
+
+  render() {
+    const { isLoading } = this.state;
+    return <div>{isLoading ? "Loading" : "We are ready"}</div>
+  }
+}
+
+
+
+
 
 export default App;
  
