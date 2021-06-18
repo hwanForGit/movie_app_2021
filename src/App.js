@@ -1,5 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import axios from 'axios';
+import Movie from './Movies';
+import './App.css';
+
 /*
 const foodILike = [
   {
@@ -39,7 +42,7 @@ Food.propTypes = {
   rating: PropTypes.number,  // isRequired가 없으면 undefined일 경우 에러가 나지 않음(있어도 되고 없어도)
 }
 
-// 함수로 넣고 싶을 때
+// 함수로 넣고 싶을 때///////
 function renderFood(dish) {
   return (
     <Food 
@@ -50,6 +53,7 @@ function renderFood(dish) {
     />
   );
 }
+///////////////////////////
 
 function App() {
   return (
@@ -74,7 +78,7 @@ function App() {
 //  2. render()
 
 /*
-class App extends React.Component {
+className App extends React.Component {
   // Component의 데이터를 넣음
   // state는 object
   // 변수를 state 안에 작성
@@ -124,25 +128,111 @@ class App extends React.Component {
 }
 */
 
-class App extends React.Component {
-  
+/*
+// 예시 movie api : https://yts-proxy.nomadcoders1.now.sh/list_movies.json
+// axios 설치 : npm i axios
+className App extends React.Component {
   state = {
-    isLoading: true
-  }
+    isLoading: true,
+    movies: []
+  };
 
+  // 비동기 세팅
+  // async와 await
+  getMovies = async () => {
+    // axios를 기다렸다가 계속 해
+    const {
+      data: {
+        data: { movies }
+      }
+    } = await axios.get('https://yts-proxy.nomadcoders1.now.sh/list_movies.json?sort_by=rating');
+    this.setState({ movies, isLoading: false });
+  };
+
+  // componentDidMount에서 data를 fetch
   componentDidMount() {
-
+    // setTimeout(function() { }, 2000);
+    //             실행할 함수, 대기시간
+    //setTimeout(()=>{
+    //  this.setState({isLoading: false});
+    //}, 6000);
+    this.getMovies();
   }
 
   render() {
-    const { isLoading } = this.state;
-    return <div>{isLoading ? "Loading" : "We are ready"}</div>
+    const { isLoading, movies } = this.state;
+    return (
+      <section className='container'>
+        {isLoading ? (
+          <div className='loader'>
+            <span className='loader__text'>Loading...</span>
+          </div>
+        ) : (
+          <div className='movies'>
+            {movies.map(movie => (
+              <Movie
+                id={movie.id}
+                year={movie.year}
+                title={movie.title}
+                summary={movie.summary}
+                poster={movie.medium_cover_image}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    );
   }
 }
 
+export default App;
+*/
 
+class App extends React.Component {
+  state = {
+    isLoading: true,
+    movies: []
+  };
 
+  getMovies = async () => {
+    const {
+      data: {
+        data: { movies }
+      }
+    } = await axios.get('https://yts-proxy.nomadcoders1.now.sh/list_movies.json?sort_by=rating');
+    this.setState({ movies, isLoading: false });
+  };
 
+  componentDidMount() {
+    this.getMovies();
+  }
+
+  render() {
+    const { isLoading, movies } = this.state;
+
+    return (
+      <section className='container'>
+        {isLoading ? (
+          <div className='loader'>
+            <span className='loader__text'>Loading...</span>
+          </div>
+        ) : (
+          <div className='movies'>
+            {movies.map((movie, index) => (
+              <Movie
+                id={movie.id}
+                year={movie.year}
+                title={movie.title}
+                summary={movie.summary}
+                poster={movie.medium_cover_image}
+                genres={movie.genres}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  }
+}
 
 export default App;
- 
